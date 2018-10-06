@@ -1,3 +1,6 @@
 #form-adjustment{
-    margin: 50px;
+    margin: 120px;
 }
+
+label{
+    font-style: italic;
