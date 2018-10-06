@@ -11,29 +11,35 @@ $(document).ready(function(){
   };
   firebase.initializeApp(config);
 
-  
+  var dataB = firebase.database();
+
   var trainName = "";
   var destination = "";
   var firstTrain = "";
   var frequencyMin = "";
 
-
+//click function to take in the information entered
   $(".btn").click(function(){
     trainName = $("#add-train-name").val().trim();
     destination = $("#add-destination-name").val().trim();
     firstTrain = $("#add-train-time").val().trim();
     frequencyMin = $("#add-frequency-min").val().trim();
 
-    console.log(trainName);
-    console.log(destination);
-    console.log(firstTrain);
-    console.log(frequencyMin);
+    //sends the names to the database
+    dataB.ref().set({
+        name: trainName,
+        dest: destination,
+        first: firstTrain,
+        freqM: frequencyMin
+    });
 
+    //function call to add after user clicks on submit
     addToDisplay(trainName, destination, firstTrain, frequencyMin);
 
 
   });
 
+  //adds the entered information to the page
   function addToDisplay(tn, ds, ft, fm){
     var p1 = $("<p>");
     var p2 = $("<p>");

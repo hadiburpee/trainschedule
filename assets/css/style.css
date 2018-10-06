@@ -1,6 +1,19 @@
 #form-adjustment{
-    margin: 120px;
+    margin: 20px;
 }
 
 label{
     font-style: italic;
+}
+
+h1, h2{
+    text-align: center;
+}
+
+.border{
+    border-width: 50px;
+    border-style: dashed;
+    
+
+}
+
