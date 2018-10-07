@@ -11,7 +11,7 @@ $(document).ready(function(){
   };
   firebase.initializeApp(config);
 
-  var dataB = firebase.database();
+  var database = firebase.database();
 
   var trainName = "";
   var destination = "";
@@ -19,14 +19,15 @@ $(document).ready(function(){
   var frequencyMin = "";
 
 //click function to take in the information entered
-  $(".btn").click(function(){
+  $(".btn").click(function(event){
+    event.preventDefault();      
     trainName = $("#add-train-name").val().trim();
     destination = $("#add-destination-name").val().trim();
     firstTrain = $("#add-train-time").val().trim();
     frequencyMin = $("#add-frequency-min").val().trim();
 
     //sends the names to the database
-    dataB.ref().set({
+    database.ref().push({
         name: trainName,
         dest: destination,
         first: firstTrain,
@@ -35,7 +36,7 @@ $(document).ready(function(){
 
     //function call to add after user clicks on submit
     addToDisplay(trainName, destination, firstTrain, frequencyMin);
-
+    clearFields();
 
   });
 
@@ -59,7 +60,14 @@ $(document).ready(function(){
 
   }
 
+  function clearDatabase(){
 
+  }
+
+  function clearFields(){
+    $(".form-control").val("");
+
+  }
 
 
 
