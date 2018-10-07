@@ -13,13 +13,14 @@ $(document).ready(function(){
 
   var database = firebase.database();
 
-  var trainName = "";
-  var destination = "";
-  var firstTrain = "";
-  var frequencyMin = "";
+  var trainName = " ";
+  var destination = " ";
+  var firstTrain = " ";
+  var frequencyMin = " ";
+  var childAdd = false;
 
 //click function to take in the information entered
-  $(".btn-primary").click(function(event){
+  $(".Add").click(function(event){
     //prevents page reload when pressing submit
     event.preventDefault();
     //pulls value from fields      
@@ -35,7 +36,7 @@ $(document).ready(function(){
         first: firstTrain,
         freqM: frequencyMin
     });
-
+    
     //function call to add after user clicks on submit
     addToDisplay(trainName, destination, firstTrain, frequencyMin);
     //clear fields call so they are reset when submitting a train schedule
@@ -43,12 +44,24 @@ $(document).ready(function(){
 
   });
 
-  //adds the entered information to the page
+//to clear train database and schedule
+    $(document).on("click", ".Clear", function(){
+        database.ref().remove();
+        $(".schClass").remove();
+    });
+
+
+//adds the entered information to the page
   function addToDisplay(tn, ds, ft, fm){
     var p1 = $("<p>");
     var p2 = $("<p>");
     var p3 = $("<p>");
     var p4 = $("<p>");
+
+    p1.addClass("schClass");
+    p2.addClass("schClass");
+    p3.addClass("schClass");
+    p4.addClass("schClass");
 
     p1.text(tn);
     p2.text(ds);
@@ -61,29 +74,31 @@ $(document).ready(function(){
     $("#next-arrival-display").append(p4);
   }
 
-  //to clear train database and schedule
-  function clearDatabase(){
-
-  }
-
   //clears the input fields
   function clearFields(){
     $(".form-control").val("");
-
   }
 
   //recalls train schedule stored in database upon page reload
   function recallDatabase(){
     database.ref().on("child_added", function(snapshot){
+        if(childAdd === false){
         var dbName = snapshot.val().name;
         var dbDest = snapshot.val().dest;
         var dbFirst = snapshot.val().first;
         var dbFreq = snapshot.val().freqM;
         addToDisplay(dbName, dbDest, dbFreq, dbFirst);
+        childAdd = true;
+        }
+        console.log(childAdd);
     });
+    
 
 }
 
 recallDatabase();
+
+console.log(childAdd);
+
 
 });//document ready bracket
