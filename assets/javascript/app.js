@@ -19,8 +19,10 @@ $(document).ready(function(){
   var frequencyMin = "";
 
 //click function to take in the information entered
-  $(".btn").click(function(event){
-    event.preventDefault();      
+  $(".btn-primary").click(function(event){
+    //prevents page reload when pressing submit
+    event.preventDefault();
+    //pulls value from fields      
     trainName = $("#add-train-name").val().trim();
     destination = $("#add-destination-name").val().trim();
     firstTrain = $("#add-train-time").val().trim();
@@ -36,6 +38,7 @@ $(document).ready(function(){
 
     //function call to add after user clicks on submit
     addToDisplay(trainName, destination, firstTrain, frequencyMin);
+    //clear fields call so they are reset when submitting a train schedule
     clearFields();
 
   });
@@ -56,19 +59,31 @@ $(document).ready(function(){
     $("#destination-display").append(p2);
     $("#frequency-display").append(p3);
     $("#next-arrival-display").append(p4);
-
-
   }
 
+  //to clear train database and schedule
   function clearDatabase(){
 
   }
 
+  //clears the input fields
   function clearFields(){
     $(".form-control").val("");
 
   }
 
+  //recalls train schedule stored in database upon page reload
+  function recallDatabase(){
+    database.ref().on("child_added", function(snapshot){
+        var dbName = snapshot.val().name;
+        var dbDest = snapshot.val().dest;
+        var dbFirst = snapshot.val().first;
+        var dbFreq = snapshot.val().freqM;
+        addToDisplay(dbName, dbDest, dbFreq, dbFirst);
+    });
 
+}
+
+recallDatabase();
 
 });//document ready bracket
