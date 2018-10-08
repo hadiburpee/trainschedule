@@ -13,35 +13,41 @@ $(document).ready(function(){
 
   var database = firebase.database();
 
-  var trainName = " ";
-  var destination = " ";
-  var firstTrain = " ";
-  var frequencyMin = " ";
+  var trainName = "";
+  var destination = "";
+  var firstTrain = "";
+  var frequencyMin = "";
   var childAdd = false;
 
 //click function to take in the information entered
   $(".Add").click(function(event){
     //prevents page reload when pressing submit
     event.preventDefault();
+    childAdd = true;
     //pulls value from fields      
     trainName = $("#add-train-name").val().trim();
     destination = $("#add-destination-name").val().trim();
     firstTrain = $("#add-train-time").val().trim();
     frequencyMin = $("#add-frequency-min").val().trim();
 
-    //sends the names to the database
-    database.ref().push({
-        name: trainName,
-        dest: destination,
-        first: firstTrain,
-        freqM: frequencyMin
-    });
-    
-    //function call to add after user clicks on submit
-    addToDisplay(trainName, destination, firstTrain, frequencyMin);
-    //clear fields call so they are reset when submitting a train schedule
-    clearFields();
-
+    //conditional to make sure all information is provided
+    if (trainName == "" || destination == "" || firstTrain == "" || frequencyMin == ""){
+        alert("Please enter all info and resubmit");
+    }
+    else{
+        //adds information to page
+        addToDisplay(trainName, destination, firstTrain, frequencyMin);
+        //clears the entry fields
+        clearFields();
+        //pushes data to database as a child, so that multiple children can be added
+        database.ref().push({
+            name: trainName,
+            dest: destination,
+            first: firstTrain,
+            freqM: frequencyMin
+        });
+    }
+  
   });
 
 //to clear train database and schedule
@@ -58,20 +64,10 @@ $(document).ready(function(){
     var p3 = $("<p>");
     var p4 = $("<p>");
 
-    p1.addClass("schClass");
-    p2.addClass("schClass");
-    p3.addClass("schClass");
-    p4.addClass("schClass");
-
-    p1.text(tn);
-    p2.text(ds);
-    p3.text(fm);
-    p4.text(ft);
-
-    $("#train-name-display").append(p1);
-    $("#destination-display").append(p2);
-    $("#frequency-display").append(p3);
-    $("#next-arrival-display").append(p4);
+    $("#train-name-display").append(p1.addClass("schClass").text(tn));
+    $("#destination-display").append(p2.addClass("schClass").text(ds));
+    $("#frequency-display").append(p3.addClass("schClass").text(fm));
+    $("#next-arrival-display").append(p4.addClass("schClass").text(ft));
   }
 
   //clears the input fields
@@ -81,6 +77,7 @@ $(document).ready(function(){
 
   //recalls train schedule stored in database upon page reload
   function recallDatabase(){
+
     database.ref().on("child_added", function(snapshot){
         if(childAdd === false){
         var dbName = snapshot.val().name;
@@ -88,7 +85,6 @@ $(document).ready(function(){
         var dbFirst = snapshot.val().first;
         var dbFreq = snapshot.val().freqM;
         addToDisplay(dbName, dbDest, dbFreq, dbFirst);
-        childAdd = true;
         }
         console.log(childAdd);
     });
