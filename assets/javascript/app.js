@@ -15,9 +15,14 @@ $(document).ready(function(){
 
   var trainName = "";
   var destination = "";
-  var firstTrain = "";
+  var firstTrainTime = "";
   var frequencyMin = "";
   var childAdd = false;
+  var currentTime = moment().format("HH:mm");
+  var testTime = "6:30";
+  
+
+  console.log("current time: " + currentTime);
 
 //click function to take in the information entered
   $(".Add").click(function(event){
@@ -27,23 +32,28 @@ $(document).ready(function(){
     //pulls value from fields      
     trainName = $("#add-train-name").val().trim();
     destination = $("#add-destination-name").val().trim();
-    firstTrain = $("#add-train-time").val().trim();
+    firstTrainTime = $("#add-train-time").val().trim();
     frequencyMin = $("#add-frequency-min").val().trim();
 
+    console.log("first train time: " + firstTrainTime);
+
     //conditional to make sure all information is provided
-    if (trainName == "" || destination == "" || firstTrain == "" || frequencyMin == ""){
+    // if (firstTrainTime !==  ) <-- Make sure the time is in the correct format
+    
+    if (trainName == "" || destination == "" || firstTrainTime == "" || frequencyMin == ""){
         alert("Please enter all info and resubmit");
     }
     else{
+        timeCalculator();
         //adds information to page
-        addToDisplay(trainName, destination, firstTrain, frequencyMin);
+        addToDisplay(trainName, destination, firstTrainTime, frequencyMin);
         //clears the entry fields
         clearFields();
         //pushes data to database as a child, so that multiple children can be added
         database.ref().push({
             name: trainName,
             dest: destination,
-            first: firstTrain,
+            first: firstTrainTime,
             freqM: frequencyMin
         });
     }
@@ -90,11 +100,79 @@ $(document).ready(function(){
     });
     
 
-}
+    }
+
+
 
 recallDatabase();
 
 console.log(childAdd);
 
+
+
+function timeCalculator(){
+    
+    var splitTime = currentTime.split(":");
+    var splitFirstTime = firstTrainTime.split(":");
+    var currhr = parseInt(splitTime[0]);
+    var currmn = parseInt(splitTime[1]);
+    var firsthr = parseInt(splitFirstTime[0]);
+    var firstmn = parseInt(splitFirstTime[1]);
+
+    var realTime = moment(currentTime, 'HH:mm');
+    console.log("real time: " + realTime);
+
+    console.log("Current splitTime: " + currhr + currmn);
+    console.log("First Time: " + firsthr + firstmn)
+    var curr = moment({
+        h: currhr,
+        m: currmn
+    });
+    var first = moment({
+        h: firsthr,
+        m: firstmn
+    });
+    var minuteDifference = curr.diff(first,'minutes');
+
+    var nextTrainMin = minuteDifference%frequencyMin;
+
+    console.log("Next Train Minutes: " + nextTrainMin);
+
+    // console.log("Next Train Time: " + nextTime);
+
+
+
+}
+
+var test1 = moment().format("HH:mm");
+var test2 = moment("20:00", "HH:mm").format("HH:mm");
+
+
+var test3 = moment("20:00", "HH:mm");
+
+console.log("test 3 before: " + test3);
+
+        test3.add(7,'m');
+
+test4 = test3.format("HH:mm");
+
+// test4 = moment(test3, "HH:mm").format("HH:mm");
+
+// var test3 = test1.clone();
+//     test3.add(7,'m');
+
+// test1.add(test2);
+
+// var test3 = test1.moment().add(7, "m");
+
+console.log("moment subtract"+ moment(test1).subtract(test2));
+
+console.log("test 1: " + test1);
+console.log("test 2: " + test2);
+console.log("test 3: " + test4);
+// console.log("test 4: " + test4)
+
+// var m = moment(newDate(2011, 2, 12, 5, 0, 0));
+// console.log(m.hours());
 
 });//document ready bracket
