@@ -20,16 +20,17 @@ $(document).ready(function(){
   var childAdd = false;
 
   //make an interval function for this to reset every minute
-  var currentTime = moment();
+//   var currentTime = moment();
 
-  var currClone = currentTime.clone();
+//   var currClone = currentTime.clone();
   var firstTimeMmt;
   
 
-  console.log("current time: " + currentTime);
+  
 
 //click function to take in the information entered
   $(".Add").click(function(event){
+    var currentTime = moment();
     //prevents page reload when pressing submit
     event.preventDefault();
     childAdd = true;
@@ -43,7 +44,7 @@ $(document).ready(function(){
     firstTimeMmt = moment(firstTrainTime, "HH:mm");
 
     //minutes difference between current time and first train time
-    var minDiff = currClone.diff(firstTimeMmt, 'minutes');
+    var minDiff = currentTime.diff(firstTimeMmt, 'minutes');
 
     console.log("Minutes Difference: " + minDiff);
 
@@ -55,7 +56,7 @@ $(document).ready(function(){
     // moment(remainder, 'm');
 
     //gives the next Train time
-    var nextTrain = currClone.subtract(remainder, 'm').add(frequencyMin, 'm');
+    var nextTrain = currentTime.subtract(remainder, 'm').add(frequencyMin, 'm');
     var nextTrainMoment = moment(nextTrain, "HH:mm");
 
     var nextTrainFormat = nextTrainMoment.format("HH:mm");
